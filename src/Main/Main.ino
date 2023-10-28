@@ -1,5 +1,4 @@
-//MIT LICENSE.
-
+//MIT LICENSE
 #include <EEPROM.h>
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
