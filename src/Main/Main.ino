@@ -43,7 +43,6 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
   if (millis() - updateInterval >= lastUpdate)
     update();
   //walk();
@@ -51,6 +50,7 @@ void loop() {
   setLeg("FL", IK[0], IK[1]);
 }
 
+//Old walking function from before IK
 void walk() {
   switch(walkPhase){
     case 0:
@@ -130,6 +130,7 @@ void walk() {
   }
 }
 
+//Function called at a fixed rate to allow slower movement of servos
 void update(){
   bool flag = false;
   lastUpdate = millis();
@@ -148,6 +149,7 @@ void update(){
     atTarget = true;
 }
 
+//Stores the angles needed to reach the input coordinates in the IK array
 void inverseKinematics(float x, float y){
   float L = sqrt((-y*-y)+(x*x));
   float Q1 = atan((x/y) + acos(((33.4 * 33.4) - (34.2 * 34.2) - (L * L)) / (-2 * L * 34.2)));
@@ -156,7 +158,8 @@ void inverseKinematics(float x, float y){
   IK[1] = 180-(Q2 * 57.2958);
 }
 
-void loadEEPROM(){ //Loads the calibration values from the EEPROM
+//Loads the calibration values from the EEPROM
+void loadEEPROM(){ 
   EEPROM.get(0,servoMid[0]);
   EEPROM.get(2,servoMid[1]);
   EEPROM.get(4,servoMid[2]);
@@ -167,6 +170,7 @@ void loadEEPROM(){ //Loads the calibration values from the EEPROM
   EEPROM.get(14,servoMid[7]);
 }
 
+//Sets the input leg to the input angle
 void setLeg(String leg, int hipAngle, int kneeAngle){
   atTarget = false;
   if (leg == "FL"){
