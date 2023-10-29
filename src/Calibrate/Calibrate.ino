@@ -29,91 +29,24 @@ void setup() {
   calibrate();
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-
-}
-
+//Calibrates the servos using user input
 void calibrate() {
   int calibrationValues[8];
   String input = "";
-  Serial.println("Enter angle for servo 1 till correct: ");
-  while(input != "n"){
+  bool cal = false;
+  int servo = 0;
+  while(!cal){
+    Serial.println("Enter angle for servo " + (servo+1) + " till correct: ");
     while (Serial.available() == 0) {}
     input = Serial.readString();
     if (input != "n"){
-      setServo(0, input.toInt());
-      calibrationValues[0] = input.toInt();
-    }
-  }
-  input = "";
-  Serial.println("Enter angle for servo 2 till correct: ");
-  while(input != "n"){
-    while (Serial.available() == 0) {}
-    input = Serial.readString();
-    if (input != "n"){
-      setServo(1, input.toInt());
-      calibrationValues[1] = input.toInt();
-    }
-  }
-  input = "";
-  Serial.println("Enter angle for servo 3 till correct: ");
-  while(input != "n"){
-    while (Serial.available() == 0) {}
-    input = Serial.readString();
-    if (input != "n"){
-      setServo(2, input.toInt());
-      calibrationValues[2] = input.toInt();
-    }
-  }
-  input = "";
-  Serial.println("Enter angle for servo 4 till correct: ");
-  while(input != "n"){
-    while (Serial.available() == 0) {}
-    input = Serial.readString();
-    if (input != "n"){
-      setServo(3, input.toInt());
-      calibrationValues[3] = input.toInt();
-    }
-  }
-  input = "";
-  Serial.println("Enter angle for servo 5 till correct: ");
-  while(input != "n"){
-    while (Serial.available() == 0) {}
-    input = Serial.readString();
-    if (input != "n"){
-      setServo(4, input.toInt());
-      calibrationValues[4] = input.toInt();
-    }
-  }
-  input = "";
-  Serial.println("Enter angle for servo 6 till correct: ");
-  while(input != "n"){
-    while (Serial.available() == 0) {}
-    input = Serial.readString();
-    if (input != "n"){
-      setServo(5, input.toInt());
-      calibrationValues[5] = input.toInt();
-    }
-  }
-  input = "";
-  Serial.println("Enter angle for servo 7 till correct: ");
-  while(input != "n"){
-    while (Serial.available() == 0) {}
-    input = Serial.readString();
-    if (input != "n"){
-      setServo(6, input.toInt());
-      calibrationValues[6] = input.toInt();
-    }
-  }
-  input = "";
-  Serial.println("Enter angle for servo 8 till correct: ");
-  while(input != "n"){
-    while (Serial.available() == 0) {}
-    input = Serial.readString();
-    if (input != "n"){
-      setServo(7, input.toInt());
-      calibrationValues[7] = input.toInt();
+      setServo(servo, input.toInt());
+      calibrationValues[servo] = input.toInt();
+    } else {
+      servo++;
+      input = "";
+      if (servo == 8)
+        cal = true;
     }
   }
   Serial.println("Save (y/n): ");
@@ -121,7 +54,6 @@ void calibrate() {
   input = Serial.readString();
   if (input == "y"){
       EEPROM.put(0, calibrationValues[0]);
-      Serial.println(calibrationValues[0]);
       EEPROM.put(2, calibrationValues[1]);
       EEPROM.put(4, calibrationValues[2]);
       EEPROM.put(6, calibrationValues[3]);
@@ -130,17 +62,15 @@ void calibrate() {
       EEPROM.put(12, calibrationValues[6]);
       EEPROM.put(14, calibrationValues[7]);
       Serial.println("Saved!");
-      Serial.println("Values:");
-      int haha = 0;
-      EEPROM.get(0, haha);
-      Serial.println("S1: " + haha);
   }
 }
 
+//Sets the input servo to the input angle
 void setServo(int num, int angle){
   driver.setPWM(num, 0, pulseWidth(angle));
 }
 
+//Calculates the pulse width to set a servo to the input angle
 int pulseWidth(int angle)
 {
   int pulse_wide, analog_value;
