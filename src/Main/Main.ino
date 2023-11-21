@@ -1,7 +1,9 @@
 //MIT LICENSE
+//Created by Harry Heywood
 #include <EEPROM.h>
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
+#include "MPU.h"
 
 #define MIN_PULSE_WIDTH       500
 #define MAX_PULSE_WIDTH       2500
@@ -30,104 +32,17 @@ int walkPhase = 0;
 void setup() {
   Wire.begin();
   Serial.begin(9600);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
 
   driver.begin();
   driver.setPWMFreq(FREQUENCY);
   loadEEPROM();
-
-  setLeg("FL", 0, 0);
-  setLeg("FR", 0, 0);
-  setLeg("RL", 0, 0);
-  setLeg("RR", 0, 0);
-  delay(1000);
 }
 
 void loop() {
   if (millis() - updateInterval >= lastUpdate)
     update();
-  //walk();
-  inverseKinematics(10,40);
-  setLeg("FL", IK[0], IK[1]);
-}
-
-//Old walking function from before IK
-void walk() {
-  switch(walkPhase){
-    case 0:
-      if (atTarget){
-        walkPhase += 1;
-      }
-      setLeg("FL", -55, 55);
-      setLeg("RR", -55, 55);
-      setLeg("FR", -45, 45);
-      setLeg("RL", -45, 45);
-      break;
-    case 1:
-      if (atTarget){
-        walkPhase += 1;
-      }
-      setLeg("FL", -55, 80);
-      setLeg("RR", -55, 80);
-      break;
-    case 2:
-      if (atTarget){
-        walkPhase += 1;
-      }
-      setLeg("FL", 15, 60);
-      setLeg("RR", 15, 60);
-      break;
-    case 3:
-      if (atTarget){
-        walkPhase += 1;
-      }
-      setLeg("FL", 45, 60);
-      setLeg("RR", 45, 60);
-      break;
-    case 4:
-      if (atTarget){
-        walkPhase += 1;
-      }
-      setLeg("FL", 45, -45);
-      setLeg("RR", 45, -45);
-      break;
-    case 5:
-      if (atTarget){
-        walkPhase += 1;
-      }
-      setLeg("FL", -45, 45);
-      setLeg("RR", -45, 45);
-      setLeg("FR", -55, 55);
-      setLeg("RL", -55, 55);
-      break;
-    case 6:
-      if (atTarget){
-        walkPhase += 1;
-      }
-      setLeg("FR", -55, 80);
-      setLeg("RL", -55, 80);
-      break;
-    case 7:
-      if (atTarget){
-        walkPhase += 1;
-      }
-      setLeg("FR", 15, 60);
-      setLeg("RL", 15, 60);
-      break;
-    case 8:
-      if (atTarget){
-        walkPhase += 1;
-      }
-      setLeg("FR", 45, 60);
-      setLeg("RL", 45, 60);
-      break;
-    case 9:
-      if (atTarget){
-        walkPhase = 0;
-      }
-      setLeg("FR", 45, -45);
-      setLeg("RL", 45, -45);
-      break;
-  }
 }
 
 //Function called at a fixed rate to allow slower movement of servos
@@ -151,6 +66,11 @@ void update(){
 
 //Stores the angles needed to reach the input coordinates in the IK array
 void inverseKinematics(float x, float y){
+  if ((x*x) + (y*y) > 4225){ //4225 is a little less than leg length squared
+    Serial.println("ERROR: Input IK distance is unreachable");
+    digitalWrite(LED_BUILTIN, HIGH);
+    return;
+  }
   float L = sqrt((-y*-y)+(x*x));
   float Q1 = atan((x/y) + acos(((33.4 * 33.4) - (34.2 * 34.2) - (L * L)) / (-2 * L * 34.2)));
   float Q2 = acos(((L * L) - (33.4 * 33.4) - (34.2 * 34.2)) / (-2 * 34.2 * 33.4));
