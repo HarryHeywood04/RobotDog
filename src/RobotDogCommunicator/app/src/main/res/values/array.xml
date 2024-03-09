@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="servo_names">
+        <item>Servo 1</item>
+        <item>Servo 2</item>
+        <item>Servo 3</item>
+        <item>Servo 4</item>
+        <item>Servo 5</item>
+        <item>Servo 6</item>
+        <item>Servo 7</item>
+        <item>Servo 8</item>
+    </string-array>
+</resources>
