@@ -3,13 +3,12 @@ This project's aim is to bring the barrier for entry to robotics down, built fro
 
 ## Directions
 To use this software:
-1. Assemble all of the main body of the robot dog including wiring
-2. Run calibration sketch and once servos stop moving turn arduino back off.
-3. Assemble legs so they point straight down. (It is advised to check there are no shorts at this point to avoid damaging your computer.)
-4. Run calibration sketch again this time with it plugged into the serial monitor.
-5. The default value is 90, adjust this by typing numbers around this into the SM till the leg is straight.
-6. Type n to go to the next leg and repeat step 5 till all legs are calibrated.
-7. Run the main sketch and start editing it to suit you.
+1. Assemble the main body and wiring
+2. Plug in servos (don't attach them to the robot just yet)
+3. Either send calibrate over serial or use the app, connect it to the bluetooth and press calibrate, then turn off the robot
+4. Screw the servos in and attach the legs in an L shape towards the front
+5. Turn the robot back on and run calibrate again, if on the app select each servo and calibrate them so they are at perfect 90 degree angles. If on serial, use commands s0-s7 (select servo), a70-110 (set the angle of the servo), c to confirm and x to cancel
+6. Once calibrated you can start messing around with the robot
 
 ## Credits
 Created by Harry Heywood
